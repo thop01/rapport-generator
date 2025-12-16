@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f0f0;
+            padding: 20px;
+        }
+
+        @media print {
+            * {
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+            }
+
+            body {
+            margin: 0;
+            padding: 0;
+            }
+
+            .page-break {
+            page-break-before: always;
+            }
+
+            .rapport {
+            page-break-inside: avoid;
+            }
+        }
+
+        @page {
+            size: A4;
+            margin: 10mm;
+        }
+
+        .rapport {
+            width: 100%;
+            max-width: 190mm;
+            min-height: 250mm;
+            margin: 0 auto 20px auto;
+            background-color: white;
+            position: relative;
+            padding: 15mm;
+            border: 6px solid #000;
+            box-sizing: border-box;
+            page-break-inside: avoid;
+        }
+
+        /* Mondrian-style geometric blocks */
+        .rapport::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 45px;
+            height: 60px;
+            background-color: #ff0000;
+            border-right: 3px solid #000;
+            border-bottom: 3px solid #000;
+        }
+
+        .rapport::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 30px;
+            height: 90px;
+            background-color: #0066cc;
+            border-left: 3px solid #000;
+            border-bottom: 3px solid #000;
+        }
+
+        h1 {
+            font-size: 1.6em;
+            font-weight: bold;
+            text-align: center;
+            margin: 10px 0 15px 0;
+            color: #000;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .report-header {
+            background-color: #ffdd00;
+            padding: 10px;
+            border: 3px solid #000;
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .report-header::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            right: -10px;
+            width: 18px;
+            height: 18px;
+            background-color: #ff0000;
+            border: 2px solid #000;
+        }
+
+        .report-section {
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .report-section:nth-child(3) {
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-left: 4px solid #0066cc;
+        }
+
+        .report-section:nth-child(4) {
+            border-top: 2px solid #000;
+            border-bottom: 2px solid #000;
+            padding: 10px 0;
+        }
+
+        h2,
+        h3 {
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #000;
+            text-transform: uppercase;
+        }
+
+        h2 {
+            font-size: 1.1em;
+        }
+
+        h3 {
+            font-size: 0.95em;
+            border-bottom: 2px solid #ffdd00;
+            padding-bottom: 3px;
+            display: inline-block;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+            background-color: white;
+            font-size: 0.8em;
+        }
+
+        th {
+            background-color: #000;
+            color: white;
+            padding: 6px;
+            text-align: left;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        td {
+            padding: 5px 6px;
+            border-bottom: 1px solid #000;
+            border-right: 1px solid #000;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f8f8f8;
+        }
+
+        .grade {
+            font-size: 1em;
+            font-weight: bold;
+            text-align: center;
+            color: #000;
+        }
+
+        .average-grade {
+            background-color: #ffdd00;
+            padding: 3px 6px;
+            border: 2px solid #000;
+            font-weight: bold;
+            font-size: 0.95em;
+        }
+
+        .report-footer {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border: 3px solid #000;
+            position: relative;
+        }
+
+        .report-footer::before {
+            content: '';
+            position: absolute;
+            top: -6px;
+            left: 10px;
+            width: 12px;
+            height: 12px;
+            background-color: #ff0000;
+            border: 1px solid #000;
+        }
+
+        p {
+            margin-bottom: 6px;
+            line-height: 1.3;
+            font-size: 0.8em;
+        }
+
+        strong {
+            font-weight: bold;
+            color: #000;
+        }
+    </style>
+</head>
+
+<body>
+
+    <section id="generation">
+        <div class="form">
+            <h2>Genereer Rapporten</h2>
+            <div class="input-group">
+                <label for="csv-data">CSV Data:</label>
+                <textarea id="csv-data" placeholder="Plak hier je CSV data..." rows="10" cols="50"></textarea>
+            </div>
+            <div class="input-group">
+                <label for="class-input">Klas:</label>
+                <input type="text" id="class-input" placeholder="Bijv. 4A">
+            </div>
+            <div class="input-group">
+                <label for="periode-input">Periode:</label>
+                <input type="text" id="periode-input" placeholder="Bijv. Periode 1">
+            </div>
+            <div class="input-group">
+                <label for="slb-input">SLB:</label>
+                <input type="text" id="slb-input" placeholder="Naam van de SLB">
+            </div>
+            <button id="generate-filter-btn">Genereer filters</button>
+        </div>
+        <div class="subject-filter">
+<!-- all the subjects to put inside the rapport or not -->
+ <button id="generate-rapports">genereer rapporten</button>
+        </div>
+    </section>
+
+
+    <section id="reports">
+        <div class="rapport" id="jacky-chan">
+            <h1>Rapport</h1>
+            <div class="report-header">
+                <h2>{studentname}</h2>
+                <p><strong>Klas:</strong> <span id="class-name">{class}</span></p>
+                <p><strong>Periode:</strong> <span id="report-period">{periode}</span></p>
+            </div>
+            <div class="report-section">
+                <h3>Cijferlijst</h3>
+                <table>
+                    <tr>
+                        <th>Vak</th>
+                        <th>Cijfer</th>
+                    </tr>
+                    <tr>
+                        <td>Nederlands</td>
+                        <td class="grade">7.5</td>
+                    </tr>
+                    <tr>
+                        <td>Engels</td>
+                        <td class="grade">8.2</td>
+                    </tr>
+                    <tr>
+                        <td>Loopbaan</td>
+                        <td class="grade">7.8</td>
+                    </tr>
+                    <tr>
+                        <td>Javascript</td>
+                        <td class="grade">8.5</td>
+                    </tr>
+                    <tr>
+                        <td>HTML/CSS</td>
+                        <td class="grade">9.0</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="report-section">
+                <p><strong>Gemiddelde:</strong> <span class="average-grade">8.2</span></p>
+            </div>
+
+            <div class="report-footer">
+                <p><strong>Studieloopbaan begeleider:</strong> <span id="teacher-name">{teacher}</span></p>
+            </div>
+
+        </div>
+
+        <div class="page-break"></div>
+        <div class="rapport" id="jacky-chan">
+            <h1>Rapport</h1>
+            <div class="report-header">
+                <h2>{studentname}</h2>
+                <p><strong>Klas:</strong> <span id="class-name">{class}</span></p>
+                <p><strong>Periode:</strong> <span id="report-period">{periode}</span></p>
+            </div>
+            <div class="report-section">
+                <h3>Grades</h3>
+                <table>
+                    <tr>
+                        <th>Vak</th>
+                        <th>Cijfer</th>
+                    </tr>
+                    <tr>
+                        <td>Nederlands</td>
+                        <td class="grade">7.5</td>
+                    </tr>
+                    <tr>
+                        <td>Engels</td>
+                        <td class="grade">8.2</td>
+                    </tr>
+                    <tr>
+                        <td>Loopbaan</td>
+                        <td class="grade">7.8</td>
+                    </tr>
+                    <tr>
+                        <td>Javascript</td>
+                        <td class="grade">8.5</td>
+                    </tr>
+                    <tr>
+                        <td>HTML/CSS</td>
+                        <td class="grade">9.0</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="report-section">
+                <p><strong>Gemiddelde:</strong> <span class="average-grade">8.2</span></p>
+            </div>
+
+            <div class="report-footer">
+                <p><strong>Studieloopbaan begeleider:</strong> <span id="teacher-name">{teacher}</span></p>
+            </div>
+
+        </div>
+
+        <div class="page-break"></div>
+        <div class="rapport" id="jacky-chan">
+            <h1>Rapport</h1>
+            <div class="report-header">
+                <h2>{studentname}</h2>
+                <p><strong>Klas:</strong> <span id="class-name">{class}</span></p>
+                <p><strong>Periode:</strong> <span id="report-period">{periode}</span></p>
+            </div>
+            <div class="report-section">
+                <h3>Grades</h3>
+                <table>
+                    <tr>
+                        <th>Vak</th>
+                        <th>Cijfer</th>
+                    </tr>
+                    <tr>
+                        <td>Nederlands</td>
+                        <td class="grade">7.5</td>
+                    </tr>
+                    <tr>
+                        <td>Engels</td>
+                        <td class="grade">8.2</td>
+                    </tr>
+                    <tr>
+                        <td>Loopbaan</td>
+                        <td class="grade">7.8</td>
+                    </tr>
+                    <tr>
+                        <td>Javascript</td>
+                        <td class="grade">8.5</td>
+                    </tr>
+                    <tr>
+                        <td>HTML/CSS</td>
+                        <td class="grade">9.0</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="report-section">
+                <p><strong>Gemiddelde:</strong> <span class="average-grade">8.2</span></p>
+            </div>
+
+            <div class="report-footer">
+                <p><strong>Studieloopbaan begeleider:</strong> <span id="teacher-name">{teacher}</span></p>
+            </div>
+
+        </div>
+    </section>
+
+
+</body>
+
+</html>
